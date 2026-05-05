@@ -1,0 +1,866 @@
+<!DOCTYPE html> <html lang="en-gb"><head>
+<title>Tree Traversal Patterns (DFS &amp; BFS)</title>
+<base href="..">
+<meta name="pathname" content="leetcode/tree-traversal-patterns-(dfs-&amp;-bfs).html">
+<meta name="description" content="Notes - Tree Traversal Patterns (DFS &amp; BFS)">
+<meta property="og:title" content="Tree Traversal Patterns (DFS &amp; BFS)">
+<meta property="og:description" content="Notes - Tree Traversal Patterns (DFS &amp; BFS)">
+<meta property="og:type" content="website">
+<meta property="og:url" content="leetcode/tree-traversal-patterns-(dfs-&amp;-bfs).html">
+<meta property="og:image" content="undefined">
+<meta charset="UTF-8"><meta property="og:site_name" content="Notes"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, minimum-scale=1.0, maximum-scale=5.0"><script async="" id="webpage-script" src="site-lib/scripts/webpage.js" onload="this.onload=null;this.setAttribute(&quot;loaded&quot;, &quot;true&quot;)"></script><script async="" id="graph-wasm-script" src="site-lib/scripts/graph-wasm.js" onload="this.onload=null;this.setAttribute(&quot;loaded&quot;, &quot;true&quot;)"></script><script async="" id="graph-render-worker-script" src="site-lib/scripts/graph-render-worker.js" onload="this.onload=null;this.setAttribute(&quot;loaded&quot;, &quot;true&quot;)"></script><link rel="icon" href="site-lib/media/favicon.png"><link rel="stylesheet" href="site-lib/styles/obsidian.css"><link rel="preload" href="site-lib/styles/global-variable-styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="site-lib/styles/global-variable-styles.css"></noscript><link rel="preload" href="site-lib/styles/main-styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="site-lib/styles/main-styles.css"></noscript><style>body{--line-width:40em;--line-width-adaptive:40em;--file-line-width:40em;--sidebar-width:min(20em, 80vw);--collapse-arrow-size:11px;--tree-vertical-spacing:1.3em;--sidebar-margin:12px}:root{background-color:#202124}.sidebar{height:100%;font-size:14px;z-index:10;min-width:calc(var(--sidebar-width) + var(--divider-width-hover));max-width:calc(var(--sidebar-width) + var(--divider-width-hover));position:relative;overflow:hidden;overflow:clip;transition:min-width ease-in-out,max-width ease-in-out;transition-duration:.2s;contain:size}#left-sidebar{left:0}#right-sidebar{right:0}.sidebar.is-collapsed{min-width:0;max-width:0}.sidebar.floating{position:absolute}.sidebar .leaf-content{height:100%;min-width:calc(var(--sidebar-width) - var(--divider-width-hover));top:0;padding:var(--sidebar-margin);padding-top:4em;line-height:var(--line-height-tight);background-color:var(--background-secondary);transition:background-color,border-right,border-left,box-shadow;transition-duration:var(--color-fade-speed);transition-timing-function:ease-in-out;position:absolute;display:flex;flex-direction:column}.sidebar:not(.is-collapsed) .leaf-content{min-width:calc(max(100%,var(--sidebar-width)) - 3px);max-width:calc(max(100%,var(--sidebar-width)) - 3px)}#left-sidebar-content{left:0;border-top-right-radius:var(--radius-l);border-bottom-right-radius:var(--radius-l)}#right-sidebar-content{right:0;border-top-left-radius:var(--radius-l);border-bottom-left-radius:var(--radius-l)}.sidebar #left-sidebar-content,.sidebar #right-sidebar-content{contain:none!important;container-type:normal!important;animation:none!important}.sidebar:has(.leaf-content:empty):has(.topbar-content:empty){display:none}.sidebar-topbar{height:calc(2.3em + 2 * var(--sidebar-margin));width:var(--sidebar-width);padding:var(--sidebar-margin);z-index:1;position:fixed;display:flex;align-items:center;transition:width ease-in-out;transition-duration:inherit}.sidebar.is-collapsed .sidebar-topbar{width:calc(2.3em + var(--sidebar-margin) * 2)}.sidebar .sidebar-topbar.is-collapsed{width:0}#left-sidebar .sidebar-topbar{left:0;flex-direction:row;border-top-right-radius:var(--radius-l)}#right-sidebar .sidebar-topbar{right:0;flex-direction:row-reverse;border-top-left-radius:var(--radius-l)}#left-sidebar .topbar-content{margin-right:calc(2.3em + var(--sidebar-margin));flex-direction:row}#right-sidebar .topbar-content{margin-left:calc(2.3em + var(--sidebar-margin));flex-direction:row-reverse}.topbar-content{overflow:hidden visible;overflow:clip visible;width:100%;height:100%;display:flex;align-items:center;transition:inherit}.sidebar.is-collapsed .topbar-content{width:0;transition:inherit}.clickable-icon.sidebar-collapse-icon{background-color:transparent;color:var(--icon-color-focused);padding:2px!important;margin:0!important;height:100%!important;width:2.3em!important;margin-inline:0.14em!important;position:absolute}#left-sidebar .clickable-icon.sidebar-collapse-icon{transform:rotateY(180deg);right:var(--sidebar-margin)}#right-sidebar .clickable-icon.sidebar-collapse-icon{transform:rotateY(180deg);left:var(--sidebar-margin)}.clickable-icon.sidebar-collapse-icon svg.svg-icon{width:100%;height:100%}.feature-title{margin-left:1px;text-transform:uppercase;letter-spacing:.06em;margin-top:.75em;margin-bottom:.75em}.feature-header{display:flex;align-items:center;padding-top:0;font-size:1em;padding-left:0}body.floating-sidebars .sidebar{position:absolute}body{transition:background-color var(--color-fade-speed) ease-in-out}#navbar:not(:empty){display:flex;align-items:center;justify-content:space-between;padding:.5em 1em;width:100%}#main{display:flex;flex-direction:column;height:100%;width:100%;align-items:stretch;justify-content:center}#main-horizontal{display:flex;flex-direction:row;flex-grow:1;width:100%;align-items:stretch;justify-content:center}#center-content{flex-basis:100%;max-width:100%;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;transition:opacity .2s ease-in-out;contain:inline-size}.hide{opacity:0!important;transition:opacity .2s ease-in-out;pointer-events:none}#center-content>.obsidian-document{padding-left:2em;padding-right:1em;margin-bottom:0;width:100%;width:-webkit-fill-available;width:-moz-available;width:fill-available;transition:background-color var(--color-fade-speed) ease-in-out;border-top-right-radius:var(--window-radius,var(--radius-m));border-top-left-radius:var(--window-radius,var(--radius-m));overflow-x:hidden!important;overflow-y:auto!important;display:flex!important;flex-direction:column!important;align-items:center!important;contain:inline-size}body #center-content>.obsidian-document>.markdown-preview-sizer{padding-bottom:80vh;width:100%;max-width:var(--line-width);flex-basis:var(--line-width);transition:background-color var(--color-fade-speed) ease-in-out;contain:inline-size}#center-content>.obsidian-document>div{width:100%!important;transition:background-color var(--color-fade-speed) ease-in-out;contain:inline-size}#center-content>.obsidian-document:not([data-type=markdown]).embed{display:flex;padding:1em;height:100%;width:100%;align-items:center;justify-content:center}#center-content>.obsidian-document:not([data-type=markdown]).embed>*{max-width:100%;max-height:100%;object-fit:contain}:not(h1,h2,h3,h4,h5,h6,li):has(> :is(.math,table)){overflow-x:auto!important}#center-content>.obsidian-document:not([data-type=markdown]){overflow-x:auto;contain:content;padding:0;margin:0;height:100%}.obsidian-document[data-type=attachment]{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;width:100%}.obsidian-document[data-type=attachment]>*{outline:0;border:none;box-shadow:none}.obsidian-document[data-type=attachment] :is(img){max-width:90%;max-height:90%;object-fit:contain}.obsidian-document[data-type=attachment]>:is(audio){width:100%;max-width:min(90%,var(--line-width))}.obsidian-document[data-type=attachment]>:is(embed,iframe,video){width:100%;height:100%;max-width:100%;max-height:100%;object-fit:contain}.canvas-wrapper>:is(.header,.footer){z-index:100;position:absolute;display:flex;justify-content:center;flex-direction:column;width:100%;align-items:center}.scroll-highlight{position:absolute;width:100%;height:100%;pointer-events:none;z-index:1000;background-color:hsla(var(--color-accent-hsl),.25);opacity:0;padding:1em;inset:50%;translate:-50% -50%;border-radius:var(--radius-s)}</style><script defer="">async function loadIncludes(){let e=document.querySelectorAll("link[itemprop='include']");for(const t of e){let e=t.getAttribute("href");try{let o="";if(e.startsWith("https:")||e.startsWith("http:")||"file:"!=window.location.protocol){const n=await fetch(e);if(!n.ok){console.log("Could not include file: "+e),t?.remove();continue}o=await n.text()}else{const t=document.getElementById(btoa(encodeURI(e)));if(t){const e=JSON.parse(decodeURI(atob(t.getAttribute("value")??"")));o=e?.data??""}}let n=document.createRange().createContextualFragment(o);t.before(n),t.remove(),console.log("Included text: "+o),console.log("Included file: "+e)}catch(o){t?.remove(),console.log("Could not include file: "+e,o);continue}}}document.addEventListener("DOMContentLoaded",(()=>{loadIncludes()}));let isFileProtocol="file:"==location.protocol;function waitLoadScripts(e,t){let o=e.map((e=>document.getElementById(e+"-script")));!function e(n){let l=o[n],c=n+1;l?(l&&"true"!=l.getAttribute("loaded")||n<o.length&&e(c),n<o.length&&l.addEventListener("load",(()=>e(c)))):n<o.length?e(c):t()}(0)}</script></head><body class="publish css-settings-manager styled-scrollbars show-inline-title show-ribbon is-focused"><script defer="">let theme=localStorage.getItem("theme")||(window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");"dark"==theme?(document.body.classList.add("theme-dark"),document.body.classList.remove("theme-light")):(document.body.classList.add("theme-light"),document.body.classList.remove("theme-dark")),window.innerWidth<480?document.body.classList.add("is-phone"):window.innerWidth<768?document.body.classList.add("is-tablet"):window.innerWidth<1024?document.body.classList.add("is-small-screen"):document.body.classList.add("is-large-screen")</script><div class="parsed-feature-container" style="display: contents;"><link itemprop="include" href="site-lib/html/custom-head-content-content.html"></div><div id="main"><div id="navbar"></div><div id="main-horizontal"><div id="left-content" class="leaf" style="--sidebar-width: var(--sidebar-width-left);"><div id="left-sidebar" class="sidebar"><div class="sidebar-handle"></div><div class="sidebar-topbar"><div class="topbar-content"><div id="search-container"><div id="search-wrapper"><input enterkeyhint="search" type="search" spellcheck="false" placeholder="Search..."><div aria-label="Clear search" id="search-clear-button"></div></div></div></div><div class="clickable-icon sidebar-collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="svg-icon"><path d="M21 3H3C1.89543 3 1 3.89543 1 5V19C1 20.1046 1.89543 21 3 21H21C22.1046 21 23 20.1046 23 19V5C23 3.89543 22.1046 3 21 3Z"></path><path d="M10 4V20"></path><path d="M4 7H7"></path><path d="M4 10H7"></path><path d="M4 13H7"></path></svg></div></div><div class="sidebar-content-wrapper"><div id="left-sidebar-content" class="leaf-content"><link itemprop="include" href="site-lib/html/file-tree-content.html"></div></div><script defer="">let ls = document.querySelector("#left-sidebar"); ls.classList.toggle("is-collapsed", window.innerWidth < 768); ls.style.setProperty("--sidebar-width", localStorage.getItem("sidebar-left-width"));</script></div></div><div id="center-content" class="leaf"><div class="obsidian-document markdown-preview-view markdown-rendered node-insert-event is-readable-line-width allow-fold-headings allow-fold-lists show-indentation-guide show-properties" data-type="markdown"><style id="MJX-CHTML-styles"></style><div class="markdown-preview-sizer markdown-preview-section"><div class="header"><h1 class="page-title heading inline-title" id="Tree_Traversal_Patterns_(DFS_&amp;_BFS)_0">Tree Traversal Patterns (DFS &amp; BFS)</h1><div class="data-bar"></div></div><div class="markdown-preview-pusher" style="width: 1px; height: 0.1px; margin-bottom: 0px;"></div><div class="el-h2"><h2 data-heading="Recursive Preorder" dir="auto" class="heading" id="Recursive_Preorder_0"><span class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>Recursive Preorder</h2></div><div class="el-h3"><h3 data-heading="[Binary Tree Paths]()" dir="auto" class="heading" id="[Binary_Tree_Paths]()_0"><span class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span><a data-tooltip-position="top" aria-label="" rel="noopener nofollow" class="external-link is-unresolved" href="" target="_self">Binary Tree Paths</a></h3></div><div class="el-p"><p dir="auto"><strong>Intitution:</strong><br>
+We need to return all paths from root to leaf as strings. A path is valid only if it ends at a leaf node (node with no children). Since a tree branches, we must explore all possible paths → this naturally suggests DFS.</p></div><div class="el-p"><p dir="auto"><strong>Key observation:</strong></p></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span>Each path is built incrementally while traversing</li>
+<li data-line="1" dir="auto"><span class="list-bullet"></span>A path is complete only when we reach a leaf</li>
+<li data-line="2" dir="auto"><span class="list-bullet"></span>At each node, we branch into left and right → explore both</li>
+</ul></div><div class="el-p"><p dir="auto"><strong>Approach</strong>:</p></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span>Use DFS (recursive)</li>
+<li data-line="1" dir="auto"><span class="list-bullet"></span>Maintain a string <code>path</code> that represents current path</li>
+<li data-line="2" dir="auto"><span class="list-bullet"></span><span class="list-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>At each node:
+<ul class="has-list-bullet">
+<li data-line="3" dir="auto"><span class="list-bullet"></span>Append current node value to path</li>
+</ul>
+</li>
+<li data-line="4" dir="auto"><span class="list-bullet"></span><span class="list-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>If it is a leaf:
+<ul class="has-list-bullet">
+<li data-line="5" dir="auto"><span class="list-bullet"></span>Push path into result</li>
+</ul>
+</li>
+<li data-line="6" dir="auto"><span class="list-bullet"></span><span class="list-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>Otherwise:
+<ul class="has-list-bullet">
+<li data-line="7" dir="auto"><span class="list-bullet"></span>Add "-&gt;"</li>
+<li data-line="8" dir="auto"><span class="list-bullet"></span>Recurse left and right</li>
+</ul>
+</li>
+</ul></div><div class="el-p"><p dir="auto"><strong>Invariant:</strong></p></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span><code>path</code> always contains the path from root → current node</li>
+<li data-line="1" dir="auto"><span class="list-bullet"></span>When reaching a leaf, <code>path</code> is a valid complete answer</li>
+</ul></div><div class="el-p"><p dir="auto"><strong>Edge cases (if any):</strong></p></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span>Empty tree → return empty vector</li>
+<li data-line="1" dir="auto"><span class="list-bullet"></span>Single node → return [node value as string]</li>
+</ul></div><div class="el-p"><p dir="auto"><strong>Time &amp; Space complexity:</strong></p></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span><span class="list-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>Time: O(N * H)
+<ul class="has-list-bullet">
+<li data-line="1" dir="auto"><span class="list-bullet"></span>N = number of nodes</li>
+<li data-line="2" dir="auto"><span class="list-bullet"></span>H = height of tree (string building cost)</li>
+</ul>
+</li>
+<li data-line="3" dir="auto"><span class="list-bullet"></span><span class="list-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>Space: O(H)
+<ul class="has-list-bullet">
+<li data-line="4" dir="auto"><span class="list-bullet"></span>recursion stack + path string</li>
+</ul>
+</li>
+</ul></div><div class="el-p"><p dir="auto"><strong>Code</strong></p></div><div class="el-pre"><pre class="language-cpp"><code data-line="0" class="language-cpp is-loaded"><span class="token keyword">class</span> <span class="token class-name">Solution</span> <span class="token punctuation">{</span>
+    <span class="token keyword">void</span> <span class="token function">dfs</span><span class="token punctuation">(</span>TreeNode<span class="token operator">*</span> root<span class="token punctuation">,</span> string path<span class="token punctuation">,</span> vector<span class="token operator">&lt;</span>string<span class="token operator">&gt;</span><span class="token operator">&amp;</span> result<span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>root <span class="token operator">==</span> <span class="token keyword">nullptr</span><span class="token punctuation">)</span> <span class="token keyword">return</span><span class="token punctuation">;</span>
+        path <span class="token operator">+=</span> <span class="token function">to_string</span><span class="token punctuation">(</span>root<span class="token operator">-&gt;</span>val<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>root<span class="token operator">-&gt;</span>left <span class="token operator">==</span> <span class="token keyword">nullptr</span> <span class="token operator">&amp;&amp;</span> root<span class="token operator">-&gt;</span>right <span class="token operator">==</span> <span class="token keyword">nullptr</span><span class="token punctuation">)</span>
+        <span class="token punctuation">{</span>
+            result<span class="token punctuation">.</span><span class="token function">push_back</span><span class="token punctuation">(</span>path<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">return</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        path <span class="token operator">+=</span> <span class="token string">"-&gt;"</span><span class="token punctuation">;</span>
+        <span class="token function">dfs</span><span class="token punctuation">(</span>root<span class="token operator">-&gt;</span>left<span class="token punctuation">,</span> path<span class="token punctuation">,</span> result<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">dfs</span><span class="token punctuation">(</span>root<span class="token operator">-&gt;</span>right<span class="token punctuation">,</span> path<span class="token punctuation">,</span> result<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+<span class="token keyword">public</span><span class="token operator">:</span>
+    vector<span class="token operator">&lt;</span>string<span class="token operator">&gt;</span> <span class="token function">binaryTreePaths</span><span class="token punctuation">(</span>TreeNode<span class="token operator">*</span> root<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        vector<span class="token operator">&lt;</span>string<span class="token operator">&gt;</span> result<span class="token punctuation">;</span>
+        <span class="token function">dfs</span><span class="token punctuation">(</span>root<span class="token punctuation">,</span> <span class="token string">""</span><span class="token punctuation">,</span> result<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> result<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+</code><button class="copy-code-button"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon lucide-copy"><rect x="8" y="8" width="14" height="14" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></pre></div><div class="el-h3"><h3 data-heading="[Symmetric Tree]()" dir="auto" class="heading" id="[Symmetric_Tree]()_0"><span class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span><a data-tooltip-position="top" aria-label="" rel="noopener nofollow" class="external-link is-unresolved" href="" target="_self">Symmetric Tree</a></h3></div><div class="el-p"><p dir="auto"><strong>Intitution:</strong><br>
+We need to check if a binary tree is symmetric (mirror of itself). Instead of checking symmetry within one subtree, we compare two subtrees (left and right) simultaneously in a mirrored way.</p></div><div class="el-p"><p dir="auto"><strong>Key observation:</strong></p></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span>Symmetry means left subtree is a mirror of right subtree</li>
+<li data-line="1" dir="auto"><span class="list-bullet"></span><span class="list-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>Mirror condition:
+<ul class="has-list-bullet">
+<li data-line="2" dir="auto"><span class="list-bullet"></span>Values must be equal</li>
+<li data-line="3" dir="auto"><span class="list-bullet"></span>Left child of one must match right child of the other</li>
+<li data-line="4" dir="auto"><span class="list-bullet"></span>Right child of one must match left child of the other</li>
+</ul>
+</li>
+</ul></div><div class="el-p"><p dir="auto"><strong>Approach:</strong></p></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span>Define a recursive function <code>isMirror(a, b)</code></li>
+<li data-line="1" dir="auto"><span class="list-bullet"></span><span class="list-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>Base cases:
+<ul class="has-list-bullet">
+<li data-line="2" dir="auto"><span class="list-bullet"></span>If both are null → true</li>
+<li data-line="3" dir="auto"><span class="list-bullet"></span>If one is null → false</li>
+</ul>
+</li>
+<li data-line="4" dir="auto"><span class="list-bullet"></span><span class="list-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>Check:
+<ul class="has-list-bullet">
+<li data-line="5" dir="auto"><span class="list-bullet"></span>Values equal</li>
+<li data-line="6" dir="auto"><span class="list-bullet"></span><code>a-&gt;left</code> with <code>b-&gt;right</code></li>
+<li data-line="7" dir="auto"><span class="list-bullet"></span><code>a-&gt;right</code> with <code>b-&gt;left</code></li>
+</ul>
+</li>
+<li data-line="8" dir="auto"><span class="list-bullet"></span>Call this function with <code>(root-&gt;left, root-&gt;right)</code></li>
+</ul></div><div class="el-p"><p dir="auto"><strong>Invariant:</strong></p></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span>At every step, we are comparing nodes that should be mirror positions</li>
+<li data-line="1" dir="auto"><span class="list-bullet"></span>If all such pairs satisfy mirror condition → tree is symmetric</li>
+</ul></div><div class="el-p"><p dir="auto"><strong>Edge cases (if any):</strong></p></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span>Empty tree → symmetric</li>
+<li data-line="1" dir="auto"><span class="list-bullet"></span>Single node → symmetric</li>
+<li data-line="2" dir="auto"><span class="list-bullet"></span>Skewed tree → not symmetric</li>
+</ul></div><div class="el-p"><p dir="auto"><strong>Time &amp; Space complexity:</strong></p></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span><span class="list-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>Time: O(N)
+<ul class="has-list-bullet">
+<li data-line="1" dir="auto"><span class="list-bullet"></span>Each node is visited once</li>
+</ul>
+</li>
+<li data-line="2" dir="auto"><span class="list-bullet"></span><span class="list-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>Space: O(H)
+<ul class="has-list-bullet">
+<li data-line="3" dir="auto"><span class="list-bullet"></span>Recursion stack (H = height of tree)</li>
+</ul>
+</li>
+</ul></div><div class="el-pre"><pre class="language-cpp"><code data-line="0" class="language-cpp is-loaded"><span class="token keyword">class</span> <span class="token class-name">Solution</span> <span class="token punctuation">{</span>
+    <span class="token keyword">bool</span> <span class="token function">isMirror</span><span class="token punctuation">(</span>TreeNode<span class="token operator">*</span> left<span class="token punctuation">,</span> TreeNode<span class="token operator">*</span> right<span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>left <span class="token operator">==</span> <span class="token keyword">nullptr</span> <span class="token operator">&amp;&amp;</span> right <span class="token operator">==</span> <span class="token keyword">nullptr</span><span class="token punctuation">)</span> <span class="token keyword">return</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>left <span class="token operator">==</span> <span class="token keyword">nullptr</span> <span class="token operator">||</span> right <span class="token operator">==</span> <span class="token keyword">nullptr</span><span class="token punctuation">)</span> <span class="token keyword">return</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">return</span> <span class="token punctuation">(</span>left<span class="token operator">-&gt;</span>val <span class="token operator">==</span> right<span class="token operator">-&gt;</span>val<span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span>
+               <span class="token function">isMirror</span><span class="token punctuation">(</span>left<span class="token operator">-&gt;</span>left<span class="token punctuation">,</span> right<span class="token operator">-&gt;</span>right<span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span>
+               <span class="token function">isMirror</span><span class="token punctuation">(</span>left<span class="token operator">-&gt;</span>right<span class="token punctuation">,</span> right<span class="token operator">-&gt;</span>left<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+<span class="token keyword">public</span><span class="token operator">:</span>
+    <span class="token keyword">bool</span> <span class="token function">isSymmetric</span><span class="token punctuation">(</span>TreeNode<span class="token operator">*</span> root<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>root <span class="token operator">==</span> <span class="token keyword">nullptr</span><span class="token punctuation">)</span> <span class="token keyword">return</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token function">isMirror</span><span class="token punctuation">(</span>root<span class="token operator">-&gt;</span>left<span class="token punctuation">,</span> root<span class="token operator">-&gt;</span>right<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+</code><button class="copy-code-button"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon lucide-copy"><rect x="8" y="8" width="14" height="14" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></pre></div><div class="el-h3"><h3 data-heading="[Flatten Binary Tree to Linked List](https://leetcode.com/problems/flatten-binary-tree-to-linked-list/description/)" dir="auto" class="heading" id="[Flatten_Binary_Tree_to_Linked_List](https//leetcode.com/problems/flatten-binary-tree-to-linked-list/description/)_0"><span class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span><a data-tooltip-position="top" aria-label="https://leetcode.com/problems/flatten-binary-tree-to-linked-list/description/" rel="noopener nofollow" class="external-link is-unresolved" href="https://leetcode.com/problems/flatten-binary-tree-to-linked-list/description/" target="_self">Flatten Binary Tree to Linked List</a></h3></div><div class="el-p"><p dir="auto">Intitution:<br>
+We need to convert a binary tree into a linked list in-place following preorder traversal (root → left → right).<br>
+Final structure should use only right pointers (like a singly linked list).</p></div><div class="el-p"><p dir="auto">Key observation:</p></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span>Preorder means:<br>
+current → left subtree → right subtree</li>
+<li data-line="2" dir="auto"><span class="list-bullet"></span>If we move left subtree to right, we must not lose original right subtree</li>
+<li data-line="3" dir="auto"><span class="list-bullet"></span>So we attach original right subtree to the rightmost node of left subtree</li>
+</ul></div><div class="el-p"><p dir="auto">Approach:</p></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span>Use a pointer <code>cur</code> to traverse the tree</li>
+<li data-line="1" dir="auto"><span class="list-bullet"></span><span class="list-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>For each node:
+<ul class="has-list-bullet">
+<li data-line="2" dir="auto"><span class="list-bullet"></span><span class="list-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>If left exists:
+<ul class="has-list-bullet">
+<li data-line="3" dir="auto"><span class="list-bullet"></span>Find rightmost node of left subtree (<code>prev</code>)</li>
+<li data-line="4" dir="auto"><span class="list-bullet"></span>Connect <code>prev-&gt;right = cur-&gt;right</code></li>
+<li data-line="5" dir="auto"><span class="list-bullet"></span>Move left subtree to right → <code>cur-&gt;right = cur-&gt;left</code></li>
+<li data-line="6" dir="auto"><span class="list-bullet"></span>Set <code>cur-&gt;left = nullptr</code></li>
+</ul>
+</li>
+<li data-line="7" dir="auto"><span class="list-bullet"></span>Move to next node → <code>cur = cur-&gt;right</code></li>
+</ul>
+</li>
+</ul></div><div class="el-p"><p dir="auto">Invariant:</p></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span><span class="list-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>At any point:
+<ul class="has-list-bullet">
+<li data-line="1" dir="auto"><span class="list-bullet"></span>All nodes left of <code>cur</code> are already flattened</li>
+<li data-line="2" dir="auto"><span class="list-bullet"></span>Structure from root to <code>cur</code> follows preorder</li>
+<li data-line="3" dir="auto"><span class="list-bullet"></span>No node processed has a non-null left pointer</li>
+</ul>
+</li>
+</ul></div><div class="el-p"><p dir="auto">Edge cases (if any):</p></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span>Empty tree → return</li>
+<li data-line="1" dir="auto"><span class="list-bullet"></span>Single node → already flattened</li>
+<li data-line="2" dir="auto"><span class="list-bullet"></span>Only left subtree → becomes right chain</li>
+<li data-line="3" dir="auto"><span class="list-bullet"></span>Only right subtree → unchanged</li>
+</ul></div><div class="el-p"><p dir="auto">Time &amp; Space complexity:</p></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span>Time: O(n) (each node visited once)</li>
+<li data-line="1" dir="auto"><span class="list-bullet"></span>Space: O(1) (in-place, no recursion or stack)</li>
+</ul></div><div class="el-pre"><pre class="language-cpp"><code data-line="0" class="language-cpp is-loaded"><span class="token keyword">class</span> <span class="token class-name">Solution</span> <span class="token punctuation">{</span>
+<span class="token keyword">public</span><span class="token operator">:</span>
+    <span class="token keyword">void</span> <span class="token function">flatten</span><span class="token punctuation">(</span>TreeNode<span class="token operator">*</span> root<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        TreeNode<span class="token operator">*</span> cur <span class="token operator">=</span> root<span class="token punctuation">;</span>
+        <span class="token keyword">while</span> <span class="token punctuation">(</span>cur <span class="token operator">!=</span> <span class="token keyword">nullptr</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>cur<span class="token operator">-&gt;</span>left <span class="token operator">!=</span> <span class="token keyword">nullptr</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                TreeNode<span class="token operator">*</span> prev <span class="token operator">=</span> cur<span class="token operator">-&gt;</span>left<span class="token punctuation">;</span>
+                <span class="token keyword">while</span> <span class="token punctuation">(</span>prev<span class="token operator">-&gt;</span>right <span class="token operator">!=</span> <span class="token keyword">nullptr</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    prev <span class="token operator">=</span> prev<span class="token operator">-&gt;</span>right<span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+                prev<span class="token operator">-&gt;</span>right <span class="token operator">=</span> cur<span class="token operator">-&gt;</span>right<span class="token punctuation">;</span>
+                cur<span class="token operator">-&gt;</span>right <span class="token operator">=</span> cur<span class="token operator">-&gt;</span>left<span class="token punctuation">;</span>
+                cur<span class="token operator">-&gt;</span>left <span class="token operator">=</span> <span class="token keyword">nullptr</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            cur <span class="token operator">=</span> cur<span class="token operator">-&gt;</span>right<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+</code><button class="copy-code-button"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon lucide-copy"><rect x="8" y="8" width="14" height="14" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></pre></div><div class="el-h3"><h3 data-heading="[Smallest String Starting From Leaf](https://leetcode.com/problems/smallest-string-starting-from-leaf/description/)" dir="auto" class="heading" id="[Smallest_String_Starting_From_Leaf](https//leetcode.com/problems/smallest-string-starting-from-leaf/description/)_0"><span class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span><a data-tooltip-position="top" aria-label="https://leetcode.com/problems/smallest-string-starting-from-leaf/description/" rel="noopener nofollow" class="external-link is-unresolved" href="https://leetcode.com/problems/smallest-string-starting-from-leaf/description/" target="_self">Smallest String Starting From Leaf</a></h3></div><div class="el-p"><p dir="auto">Intitution:<br>
+We need to find the lexicographically smallest string formed from a leaf to the root.<br>
+Each node has a value [0–25] mapped to characters ['a'–'z'].<br>
+So every root-to-leaf path forms a string, but we must read it in reverse (leaf → root).</p></div><div class="el-p"><p dir="auto">Key observation:</p></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span>Paths are naturally formed root → leaf using DFS</li>
+<li data-line="1" dir="auto"><span class="list-bullet"></span>But required string is leaf → root</li>
+<li data-line="2" dir="auto"><span class="list-bullet"></span>Instead of reversing at leaf, build string by adding current character at the front</li>
+<li data-line="3" dir="auto"><span class="list-bullet"></span>At every leaf, compare the formed string with current best</li>
+</ul></div><div class="el-p"><p dir="auto">Approach:</p></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span>Use DFS traversal</li>
+<li data-line="1" dir="auto"><span class="list-bullet"></span>Maintain a string <code>path</code></li>
+<li data-line="2" dir="auto"><span class="list-bullet"></span><span class="list-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>At each node:
+<ul class="has-list-bullet">
+<li data-line="3" dir="auto"><span class="list-bullet"></span>Convert value to char → <code>ch = node-&gt;val + 'a'</code></li>
+<li data-line="4" dir="auto"><span class="list-bullet"></span>Prepend → <code>path = ch + path</code></li>
+</ul>
+</li>
+<li data-line="5" dir="auto"><span class="list-bullet"></span><span class="list-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>If leaf:
+<ul class="has-list-bullet">
+<li data-line="6" dir="auto"><span class="list-bullet"></span>Compare with result and update if smaller</li>
+</ul>
+</li>
+<li data-line="7" dir="auto"><span class="list-bullet"></span>Recurse left and right</li>
+<li data-line="8" dir="auto"><span class="list-bullet"></span>Use pass-by-value for path to avoid backtracking issues</li>
+</ul></div><div class="el-p"><p dir="auto">Invariant:</p></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span>At any node, <code>path</code> represents the string from current node → root</li>
+<li data-line="1" dir="auto"><span class="list-bullet"></span>At leaf, <code>path</code> is a valid candidate answer (leaf → root)</li>
+</ul></div><div class="el-p"><p dir="auto">Edge cases (if any):</p></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span>Empty tree → return ""</li>
+<li data-line="1" dir="auto"><span class="list-bullet"></span>Single node → return its character</li>
+<li data-line="2" dir="auto"><span class="list-bullet"></span>Skewed tree → only one path exists</li>
+</ul></div><div class="el-p"><p dir="auto">Time &amp; Space complexity:</p></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span>Time: O(n * h) (string operations up to height at each node)</li>
+<li data-line="1" dir="auto"><span class="list-bullet"></span>Space: O(h) recursion stack</li>
+</ul></div><div class="el-p"><p dir="auto"><strong>Code</strong></p></div><div class="el-pre"><pre class="language-cpp"><code data-line="0" class="language-cpp is-loaded"><span class="token keyword">class</span> <span class="token class-name">Solution</span> <span class="token punctuation">{</span>
+    string result<span class="token punctuation">;</span>
+    <span class="token keyword">void</span> <span class="token function">dfs</span><span class="token punctuation">(</span>TreeNode<span class="token operator">*</span> root<span class="token punctuation">,</span> string path<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>root <span class="token operator">==</span> <span class="token keyword">nullptr</span><span class="token punctuation">)</span> <span class="token keyword">return</span><span class="token punctuation">;</span>
+        <span class="token keyword">char</span> ch <span class="token operator">=</span> root<span class="token operator">-&gt;</span>val <span class="token operator">+</span> <span class="token char">'a'</span><span class="token punctuation">;</span>
+        path <span class="token operator">=</span> ch <span class="token operator">+</span> path<span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>root<span class="token operator">-&gt;</span>left <span class="token operator">==</span> <span class="token keyword">nullptr</span> <span class="token operator">&amp;&amp;</span> root<span class="token operator">-&gt;</span>right <span class="token operator">==</span> <span class="token keyword">nullptr</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>result<span class="token punctuation">.</span><span class="token function">empty</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">||</span> path <span class="token operator">&lt;</span> result<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                result <span class="token operator">=</span> path<span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            <span class="token keyword">return</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token function">dfs</span><span class="token punctuation">(</span>root<span class="token operator">-&gt;</span>left<span class="token punctuation">,</span> path<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">dfs</span><span class="token punctuation">(</span>root<span class="token operator">-&gt;</span>right<span class="token punctuation">,</span> path<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+<span class="token keyword">public</span><span class="token operator">:</span>
+    string <span class="token function">smallestFromLeaf</span><span class="token punctuation">(</span>TreeNode<span class="token operator">*</span> root<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">dfs</span><span class="token punctuation">(</span>root<span class="token punctuation">,</span> <span class="token string">""</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> result<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+</code><button class="copy-code-button"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon lucide-copy"><rect x="8" y="8" width="14" height="14" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></pre></div><div class="el-h3"><h3 data-heading="[Find Mode in Binary Search Tree](https://leetcode.com/problems/find-mode-in-binary-search-tree/description/)" dir="auto" class="heading" id="[Find_Mode_in_Binary_Search_Tree](https//leetcode.com/problems/find-mode-in-binary-search-tree/description/)_0"><span class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span><a data-tooltip-position="top" aria-label="https://leetcode.com/problems/find-mode-in-binary-search-tree/description/" rel="noopener nofollow" class="external-link is-unresolved" href="https://leetcode.com/problems/find-mode-in-binary-search-tree/description/" target="_self">Find Mode in Binary Search Tree</a></h3></div><div class="el-p"><p dir="auto">Intitution:</p></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span>We need to find the most frequent value(s) in a BST</li>
+<li data-line="1" dir="auto"><span class="list-bullet"></span>BST inorder traversal gives values in sorted order</li>
+<li data-line="2" dir="auto"><span class="list-bullet"></span>In a sorted sequence, duplicates appear consecutively</li>
+<li data-line="3" dir="auto"><span class="list-bullet"></span>So problem reduces to: count frequencies in sorted traversal and track max</li>
+</ul></div><div class="el-p"><p dir="auto">Key observation:</p></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span>Inorder traversal of BST → sorted order</li>
+<li data-line="1" dir="auto"><span class="list-bullet"></span>Same values will be adjacent → easy frequency counting</li>
+<li data-line="2" dir="auto"><span class="list-bullet"></span>We don’t need extra hashmap → can do in O(1) space (excluding recursion)</li>
+</ul></div><div class="el-p"><p dir="auto">Approach:</p></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span>Perform inorder traversal</li>
+<li data-line="1" dir="auto"><span class="list-bullet"></span><span class="list-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>Maintain:
+<ul class="has-list-bullet">
+<li data-line="2" dir="auto"><span class="list-bullet"></span>prev → previous node</li>
+<li data-line="3" dir="auto"><span class="list-bullet"></span>currCount → count of current value</li>
+<li data-line="4" dir="auto"><span class="list-bullet"></span>maxCount → highest frequency seen so far</li>
+<li data-line="5" dir="auto"><span class="list-bullet"></span>result → stores modes</li>
+</ul>
+</li>
+<li data-line="6" dir="auto"><span class="list-bullet"></span><span class="list-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>For each node:
+<ul class="has-list-bullet">
+<li data-line="7" dir="auto"><span class="list-bullet"></span>If prev exists and same value → currCount++</li>
+<li data-line="8" dir="auto"><span class="list-bullet"></span>Else → currCount = 1</li>
+<li data-line="9" dir="auto"><span class="list-bullet"></span><span class="list-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>If currCount &gt; maxCount:
+<ul class="has-list-bullet">
+<li data-line="10" dir="auto"><span class="list-bullet"></span>clear result</li>
+<li data-line="11" dir="auto"><span class="list-bullet"></span>add current value</li>
+<li data-line="12" dir="auto"><span class="list-bullet"></span>update maxCount</li>
+</ul>
+</li>
+<li data-line="13" dir="auto"><span class="list-bullet"></span><span class="list-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>If currCount == maxCount:
+<ul class="has-list-bullet">
+<li data-line="14" dir="auto"><span class="list-bullet"></span>add current value</li>
+</ul>
+</li>
+<li data-line="15" dir="auto"><span class="list-bullet"></span>Update prev</li>
+</ul>
+</li>
+</ul></div><div class="el-p"><p dir="auto">Invariant:</p></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span><span class="list-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>At any node:
+<ul class="has-list-bullet">
+<li data-line="1" dir="auto"><span class="list-bullet"></span>currCount = frequency of current value till now</li>
+<li data-line="2" dir="auto"><span class="list-bullet"></span>maxCount = max frequency seen so far</li>
+<li data-line="3" dir="auto"><span class="list-bullet"></span>result contains all values with frequency = maxCount</li>
+</ul>
+</li>
+</ul></div><div class="el-p"><p dir="auto">Edge cases (if any):</p></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span>Empty tree → return empty list</li>
+<li data-line="1" dir="auto"><span class="list-bullet"></span>All values same → single mode</li>
+<li data-line="2" dir="auto"><span class="list-bullet"></span>All values unique → all are modes</li>
+<li data-line="3" dir="auto"><span class="list-bullet"></span>Skewed tree → recursion depth increases</li>
+</ul></div><div class="el-p"><p dir="auto">Time &amp; Space complexity:</p></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span>Time: O(n) (visit each node once)</li>
+<li data-line="1" dir="auto"><span class="list-bullet"></span><span class="list-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>Space: O(h) recursion stack
+<ul class="has-list-bullet">
+<li data-line="2" dir="auto"><span class="list-bullet"></span>Balanced tree → O(log n)</li>
+<li data-line="3" dir="auto"><span class="list-bullet"></span>Skewed tree → O(n)</li>
+</ul>
+</li>
+</ul></div><div class="el-p"><p dir="auto"><strong>Code</strong></p></div><div class="el-pre"><pre class="language-cpp"><code data-line="0" class="language-cpp is-loaded"><span class="token keyword">class</span> <span class="token class-name">Solution</span> <span class="token punctuation">{</span>
+    TreeNode<span class="token operator">*</span> prev <span class="token operator">=</span> <span class="token keyword">nullptr</span><span class="token punctuation">;</span>
+    <span class="token keyword">int</span> currCount <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token keyword">int</span> maxCount <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    vector<span class="token operator">&lt;</span><span class="token keyword">int</span><span class="token operator">&gt;</span> result<span class="token punctuation">;</span>
+
+    <span class="token keyword">void</span> <span class="token function">inorder</span><span class="token punctuation">(</span>TreeNode<span class="token operator">*</span> root<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>root <span class="token operator">==</span> <span class="token keyword">nullptr</span><span class="token punctuation">)</span> <span class="token keyword">return</span><span class="token punctuation">;</span>
+
+        <span class="token function">inorder</span><span class="token punctuation">(</span>root<span class="token operator">-&gt;</span>left<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>prev <span class="token operator">!=</span> <span class="token keyword">nullptr</span> <span class="token operator">&amp;&amp;</span> prev<span class="token operator">-&gt;</span>val <span class="token operator">==</span> root<span class="token operator">-&gt;</span>val<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            currCount<span class="token operator">++</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+            currCount <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>currCount <span class="token operator">&gt;</span> maxCount<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            result<span class="token punctuation">.</span><span class="token function">clear</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            result<span class="token punctuation">.</span><span class="token function">push_back</span><span class="token punctuation">(</span>root<span class="token operator">-&gt;</span>val<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            maxCount <span class="token operator">=</span> currCount<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>currCount <span class="token operator">==</span> maxCount<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            result<span class="token punctuation">.</span><span class="token function">push_back</span><span class="token punctuation">(</span>root<span class="token operator">-&gt;</span>val<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        prev <span class="token operator">=</span> root<span class="token punctuation">;</span>
+        <span class="token function">inorder</span><span class="token punctuation">(</span>root<span class="token operator">-&gt;</span>right<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+<span class="token keyword">public</span><span class="token operator">:</span>
+    vector<span class="token operator">&lt;</span><span class="token keyword">int</span><span class="token operator">&gt;</span> <span class="token function">findMode</span><span class="token punctuation">(</span>TreeNode<span class="token operator">*</span> root<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">inorder</span><span class="token punctuation">(</span>root<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> result<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+</code><button class="copy-code-button"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon lucide-copy"><rect x="8" y="8" width="14" height="14" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></pre></div><div class="el-h3"><h3 data-heading="[Kth Smallest Element in a BST](https://leetcode.com/problems/kth-smallest-element-in-a-bst/description/)" dir="auto" class="heading" id="[Kth_Smallest_Element_in_a_BST](https//leetcode.com/problems/kth-smallest-element-in-a-bst/description/)_0"><span class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span><a data-tooltip-position="top" aria-label="https://leetcode.com/problems/kth-smallest-element-in-a-bst/description/" rel="noopener nofollow" class="external-link is-unresolved" href="https://leetcode.com/problems/kth-smallest-element-in-a-bst/description/" target="_self">Kth Smallest Element in a BST</a></h3></div><div class="el-p"><p dir="auto">Intitution:</p></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span>We need to find the kth smallest element in a BST</li>
+<li data-line="1" dir="auto"><span class="list-bullet"></span>BST property: inorder traversal gives sorted order</li>
+<li data-line="2" dir="auto"><span class="list-bullet"></span>So kth smallest = kth element in inorder traversal</li>
+</ul></div><div class="el-p"><p dir="auto">Key observation:</p></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span>Inorder traversal (left → node → right) gives elements in increasing order</li>
+<li data-line="1" dir="auto"><span class="list-bullet"></span>We don’t need full array, just count while traversing</li>
+<li data-line="2" dir="auto"><span class="list-bullet"></span>Stop traversal once we reach kth element</li>
+</ul></div><div class="el-p"><p dir="auto">Approach:</p></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span>Perform inorder traversal</li>
+<li data-line="1" dir="auto"><span class="list-bullet"></span>Maintain a counter <code>cnt</code></li>
+<li data-line="2" dir="auto"><span class="list-bullet"></span><span class="list-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>For each node:
+<ul class="has-list-bullet">
+<li data-line="3" dir="auto"><span class="list-bullet"></span>Traverse left</li>
+<li data-line="4" dir="auto"><span class="list-bullet"></span>Increment cnt</li>
+<li data-line="5" dir="auto"><span class="list-bullet"></span>If cnt == k → this node is answer</li>
+<li data-line="6" dir="auto"><span class="list-bullet"></span>Traverse right (only if needed)</li>
+</ul>
+</li>
+<li data-line="7" dir="auto"><span class="list-bullet"></span>Use early stopping once answer is found</li>
+</ul></div><div class="el-p"><p dir="auto">Invariant:</p></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span><span class="list-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>At any point:
+<ul class="has-list-bullet">
+<li data-line="1" dir="auto"><span class="list-bullet"></span>cnt = number of nodes processed in inorder so far</li>
+<li data-line="2" dir="auto"><span class="list-bullet"></span>When cnt == k → current node is kth smallest</li>
+</ul>
+</li>
+</ul></div><div class="el-p"><p dir="auto">Edge cases (if any):</p></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span>k = 1 → smallest element (leftmost node)</li>
+<li data-line="1" dir="auto"><span class="list-bullet"></span>k = n → largest element (rightmost node)</li>
+<li data-line="2" dir="auto"><span class="list-bullet"></span>Skewed tree → behaves like sorted array</li>
+<li data-line="3" dir="auto"><span class="list-bullet"></span>Tree with duplicates → counts duplicates as separate elements</li>
+</ul></div><div class="el-p"><p dir="auto">Time &amp; Space complexity:</p></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span><span class="list-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>Time: O(h + k)
+<ul class="has-list-bullet">
+<li data-line="1" dir="auto"><span class="list-bullet"></span>In worst case: O(n)</li>
+</ul>
+</li>
+<li data-line="2" dir="auto"><span class="list-bullet"></span><span class="list-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>Space: O(h) recursion stack
+<ul class="has-list-bullet">
+<li data-line="3" dir="auto"><span class="list-bullet"></span>Balanced → O(log n)</li>
+<li data-line="4" dir="auto"><span class="list-bullet"></span>Skewed → O(n)</li>
+</ul>
+</li>
+</ul></div><div class="el-p"><p dir="auto"><strong>Code</strong></p></div><div class="el-pre"><pre class="language-cpp"><code data-line="0" class="language-cpp is-loaded"><span class="token keyword">class</span> <span class="token class-name">Solution</span> <span class="token punctuation">{</span>
+    <span class="token keyword">bool</span> found <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">void</span> <span class="token function">inorder</span><span class="token punctuation">(</span>TreeNode<span class="token operator">*</span> root<span class="token punctuation">,</span><span class="token keyword">int</span><span class="token operator">&amp;</span> cnt<span class="token punctuation">,</span><span class="token keyword">int</span><span class="token operator">&amp;</span> ans<span class="token punctuation">,</span><span class="token keyword">int</span> k<span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>root <span class="token operator">==</span> <span class="token keyword">nullptr</span> <span class="token operator">||</span> found<span class="token punctuation">)</span> <span class="token keyword">return</span><span class="token punctuation">;</span>
+        <span class="token function">inorder</span><span class="token punctuation">(</span>root<span class="token operator">-&gt;</span>left<span class="token punctuation">,</span>cnt<span class="token punctuation">,</span>ans<span class="token punctuation">,</span>k<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>found<span class="token punctuation">)</span> <span class="token keyword">return</span><span class="token punctuation">;</span>
+        cnt<span class="token operator">++</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>cnt <span class="token operator">==</span> k<span class="token punctuation">)</span>
+        <span class="token punctuation">{</span>
+            ans <span class="token operator">=</span> root<span class="token operator">-&gt;</span>val<span class="token punctuation">;</span>
+            found <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+            <span class="token keyword">return</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token function">inorder</span><span class="token punctuation">(</span>root<span class="token operator">-&gt;</span>right<span class="token punctuation">,</span>cnt<span class="token punctuation">,</span>ans<span class="token punctuation">,</span>k<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+<span class="token keyword">public</span><span class="token operator">:</span>
+    <span class="token keyword">int</span> <span class="token function">kthSmallest</span><span class="token punctuation">(</span>TreeNode<span class="token operator">*</span> root<span class="token punctuation">,</span> <span class="token keyword">int</span> k<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">int</span> cnt <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+        <span class="token keyword">int</span> ans <span class="token operator">=</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">;</span>
+        <span class="token function">inorder</span><span class="token punctuation">(</span>root<span class="token punctuation">,</span>cnt<span class="token punctuation">,</span>ans<span class="token punctuation">,</span>k<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> ans<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+</code><button class="copy-code-button"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon lucide-copy"><rect x="8" y="8" width="14" height="14" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></pre></div><div class="el-h3"><h3 data-heading="[Validate Binary Search Tree](https://leetcode.com/problems/validate-binary-search-tree/description/)" dir="auto" class="heading" id="[Validate_Binary_Search_Tree](https//leetcode.com/problems/validate-binary-search-tree/description/)_0"><span class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span><a data-tooltip-position="top" aria-label="https://leetcode.com/problems/validate-binary-search-tree/description/" rel="noopener nofollow" class="external-link is-unresolved" href="https://leetcode.com/problems/validate-binary-search-tree/description/" target="_self">Validate Binary Search Tree</a></h3></div><div class="el-p"><p dir="auto">Intitution:</p></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span>We need to check if a binary tree satisfies BST rules</li>
+<li data-line="1" dir="auto"><span class="list-bullet"></span>Local comparison (parent vs immediate child) is NOT enough</li>
+<li data-line="2" dir="auto"><span class="list-bullet"></span>Each node must satisfy constraints coming from all its ancestors</li>
+<li data-line="3" dir="auto"><span class="list-bullet"></span>So every node must lie within a valid range (min, max)</li>
+</ul></div><div class="el-p"><p dir="auto">Key observation:</p></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span><span class="list-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>In BST:
+<ul class="has-list-bullet">
+<li data-line="1" dir="auto"><span class="list-bullet"></span>Left subtree → all values &lt; root</li>
+<li data-line="2" dir="auto"><span class="list-bullet"></span>Right subtree → all values &gt; root</li>
+</ul>
+</li>
+<li data-line="3" dir="auto"><span class="list-bullet"></span>This rule applies recursively for entire subtree, not just immediate children</li>
+<li data-line="4" dir="auto"><span class="list-bullet"></span><span class="list-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>So each node has a valid range:
+<ul class="has-list-bullet">
+<li data-line="5" dir="auto"><span class="list-bullet"></span>Left child range: (low, root-&gt;val)</li>
+<li data-line="6" dir="auto"><span class="list-bullet"></span>Right child range: (root-&gt;val, high)</li>
+</ul>
+</li>
+</ul></div><div class="el-p"><p dir="auto">Approach:</p></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span>Use recursion with range limits</li>
+<li data-line="1" dir="auto"><span class="list-bullet"></span>Start with range (-inf, +inf)</li>
+<li data-line="2" dir="auto"><span class="list-bullet"></span><span class="list-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>For each node:
+<ul class="has-list-bullet">
+<li data-line="3" dir="auto"><span class="list-bullet"></span>If node-&gt;val &lt;= low OR node-&gt;val &gt;= high → invalid</li>
+<li data-line="4" dir="auto"><span class="list-bullet"></span>Recurse left with (low, node-&gt;val)</li>
+<li data-line="5" dir="auto"><span class="list-bullet"></span>Recurse right with (node-&gt;val, high)</li>
+</ul>
+</li>
+<li data-line="6" dir="auto"><span class="list-bullet"></span>If all nodes satisfy range → valid BST</li>
+</ul></div><div class="el-p"><p dir="auto">Invariant:</p></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span><span class="list-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>At any node:
+<ul class="has-list-bullet">
+<li data-line="1" dir="auto"><span class="list-bullet"></span>low &lt; node-&gt;val &lt; high</li>
+<li data-line="2" dir="auto"><span class="list-bullet"></span>All nodes in subtree must obey inherited constraints</li>
+</ul>
+</li>
+</ul></div><div class="el-p"><p dir="auto">Edge cases (if any):</p></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span>Empty tree → valid BST</li>
+<li data-line="1" dir="auto"><span class="list-bullet"></span>Single node → valid BST</li>
+<li data-line="2" dir="auto"><span class="list-bullet"></span>Duplicate values → invalid (strict inequality required)</li>
+<li data-line="3" dir="auto"><span class="list-bullet"></span>INT_MIN / INT_MAX → use long long to avoid overflow issues</li>
+<li data-line="4" dir="auto"><span class="list-bullet"></span>Skewed tree → deep recursion</li>
+</ul></div><div class="el-p"><p dir="auto">Time &amp; Space complexity:</p></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span>Time: O(n)</li>
+<li data-line="1" dir="auto"><span class="list-bullet"></span><span class="list-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>Space: O(h)
+<ul class="has-list-bullet">
+<li data-line="2" dir="auto"><span class="list-bullet"></span>Balanced → O(log n)</li>
+<li data-line="3" dir="auto"><span class="list-bullet"></span>Skewed → O(n)</li>
+</ul>
+</li>
+</ul></div><div class="el-p"><p dir="auto"><strong>Code</strong></p></div><div class="el-pre"><pre class="language-cpp"><code data-line="0" class="language-cpp is-loaded"><span class="token keyword">class</span> <span class="token class-name">Solution</span> <span class="token punctuation">{</span>
+    <span class="token keyword">bool</span> <span class="token function">validate</span><span class="token punctuation">(</span>TreeNode<span class="token operator">*</span> root<span class="token punctuation">,</span> <span class="token keyword">long</span> <span class="token keyword">long</span> low<span class="token punctuation">,</span> <span class="token keyword">long</span> <span class="token keyword">long</span> high<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>root <span class="token operator">==</span> <span class="token keyword">nullptr</span><span class="token punctuation">)</span> <span class="token keyword">return</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>root<span class="token operator">-&gt;</span>val <span class="token operator">&lt;=</span> low <span class="token operator">||</span> root<span class="token operator">-&gt;</span>val <span class="token operator">&gt;=</span> high<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">return</span> <span class="token function">validate</span><span class="token punctuation">(</span>root<span class="token operator">-&gt;</span>left<span class="token punctuation">,</span> low<span class="token punctuation">,</span> root<span class="token operator">-&gt;</span>val<span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span>
+               <span class="token function">validate</span><span class="token punctuation">(</span>root<span class="token operator">-&gt;</span>right<span class="token punctuation">,</span> root<span class="token operator">-&gt;</span>val<span class="token punctuation">,</span> high<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+<span class="token keyword">public</span><span class="token operator">:</span>
+    <span class="token keyword">bool</span> <span class="token function">isValidBST</span><span class="token punctuation">(</span>TreeNode<span class="token operator">*</span> root<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token function">validate</span><span class="token punctuation">(</span>root<span class="token punctuation">,</span> LLONG_MIN<span class="token punctuation">,</span> LLONG_MAX<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+</code><button class="copy-code-button"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon lucide-copy"><rect x="8" y="8" width="14" height="14" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></pre></div><div class="el-h2"><h2 data-heading="Recursive Inorder" dir="auto" class="heading" id="Recursive_Inorder_0"><span class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>Recursive Inorder</h2></div><div class="el-h3"><h3 data-heading="[Find Mode in Binary Search Tree](https://leetcode.com/problems/find-mode-in-binary-search-tree/description/)" dir="auto" class="heading" id="[Find_Mode_in_Binary_Search_Tree](https//leetcode.com/problems/find-mode-in-binary-search-tree/description/)_1"><span class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span><a data-tooltip-position="top" aria-label="https://leetcode.com/problems/find-mode-in-binary-search-tree/description/" rel="noopener nofollow" class="external-link is-unresolved" href="https://leetcode.com/problems/find-mode-in-binary-search-tree/description/" target="_self">Find Mode in Binary Search Tree</a></h3></div><div class="el-p"><p dir="auto">Intitution:</p></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span>We need to find the value(s) that appear most frequently in a BST</li>
+<li data-line="1" dir="auto"><span class="list-bullet"></span>BST inorder traversal gives values in sorted order</li>
+<li data-line="2" dir="auto"><span class="list-bullet"></span>In sorted order, duplicates appear consecutively</li>
+<li data-line="3" dir="auto"><span class="list-bullet"></span>So we can count frequencies while traversing inorder</li>
+</ul></div><div class="el-p"><p dir="auto">Key observation:</p></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span>Inorder traversal → sorted sequence</li>
+<li data-line="1" dir="auto"><span class="list-bullet"></span>Same values appear adjacent</li>
+<li data-line="2" dir="auto"><span class="list-bullet"></span><span class="list-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>We only need:
+<ul class="has-list-bullet">
+<li data-line="3" dir="auto"><span class="list-bullet"></span>previous node</li>
+<li data-line="4" dir="auto"><span class="list-bullet"></span>current frequency</li>
+<li data-line="5" dir="auto"><span class="list-bullet"></span>maximum frequency</li>
+</ul>
+</li>
+<li data-line="6" dir="auto"><span class="list-bullet"></span>No hashmap required</li>
+</ul></div><div class="el-p"><p dir="auto">Approach:</p></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span>Perform inorder traversal</li>
+<li data-line="1" dir="auto"><span class="list-bullet"></span><span class="list-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>Maintain:
+<ul class="has-list-bullet">
+<li data-line="2" dir="auto"><span class="list-bullet"></span>prev → previous visited node</li>
+<li data-line="3" dir="auto"><span class="list-bullet"></span>cnt → current value frequency</li>
+<li data-line="4" dir="auto"><span class="list-bullet"></span>max_count → highest frequency seen</li>
+<li data-line="5" dir="auto"><span class="list-bullet"></span>result → stores modes</li>
+</ul>
+</li>
+<li data-line="6" dir="auto"><span class="list-bullet"></span><span class="list-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>For each node:
+<ul class="has-list-bullet">
+<li data-line="7" dir="auto"><span class="list-bullet"></span><span class="list-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>If same as prev:
+<ul class="has-list-bullet">
+<li data-line="8" dir="auto"><span class="list-bullet"></span>cnt++</li>
+</ul>
+</li>
+<li data-line="9" dir="auto"><span class="list-bullet"></span><span class="list-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>Else:
+<ul class="has-list-bullet">
+<li data-line="10" dir="auto"><span class="list-bullet"></span>cnt = 1</li>
+</ul>
+</li>
+<li data-line="11" dir="auto"><span class="list-bullet"></span><span class="list-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>Compare cnt with max_count:
+<ul class="has-list-bullet">
+<li data-line="12" dir="auto"><span class="list-bullet"></span><span class="list-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>cnt &gt; max_count:
+<ul class="has-list-bullet">
+<li data-line="13" dir="auto"><span class="list-bullet"></span>clear result</li>
+<li data-line="14" dir="auto"><span class="list-bullet"></span>add current value</li>
+<li data-line="15" dir="auto"><span class="list-bullet"></span>update max_count</li>
+</ul>
+</li>
+<li data-line="16" dir="auto"><span class="list-bullet"></span><span class="list-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>cnt == max_count:
+<ul class="has-list-bullet">
+<li data-line="17" dir="auto"><span class="list-bullet"></span>add current value</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li data-line="18" dir="auto"><span class="list-bullet"></span>Update prev after processing node</li>
+</ul></div><div class="el-p"><p dir="auto">Invariant:</p></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span><span class="list-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>During inorder traversal:
+<ul class="has-list-bullet">
+<li data-line="1" dir="auto"><span class="list-bullet"></span>cnt = frequency of current value block</li>
+<li data-line="2" dir="auto"><span class="list-bullet"></span>max_count = highest frequency encountered so far</li>
+<li data-line="3" dir="auto"><span class="list-bullet"></span>result contains all values with frequency = max_count</li>
+</ul>
+</li>
+</ul></div><div class="el-p"><p dir="auto">Common mistake:</p></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span>Updating frequency only when duplicate occurs</li>
+<li data-line="1" dir="auto"><span class="list-bullet"></span>Every value must be processed at least once</li>
+<li data-line="2" dir="auto"><span class="list-bullet"></span><span class="list-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>When current value changes:
+<ul class="has-list-bullet">
+<li data-line="3" dir="auto"><span class="list-bullet"></span>reset cnt = 1</li>
+</ul>
+</li>
+<li data-line="4" dir="auto"><span class="list-bullet"></span>Otherwise unique values never get counted</li>
+</ul></div><div class="el-p"><p dir="auto">Wrong logic:</p></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span><span class="list-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>Only handling:
+<ul class="has-list-bullet">
+<li data-line="1" dir="auto"><span class="list-bullet"></span>prev != nullptr &amp;&amp; prev-&gt;val == root-&gt;val</li>
+</ul>
+</li>
+<li data-line="2" dir="auto"><span class="list-bullet"></span>This ignores first occurrence of values</li>
+</ul></div><div class="el-p"><p dir="auto">Correct logic:</p></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span><span class="list-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>Same value:
+<ul class="has-list-bullet">
+<li data-line="1" dir="auto"><span class="list-bullet"></span>cnt++</li>
+</ul>
+</li>
+<li data-line="2" dir="auto"><span class="list-bullet"></span><span class="list-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>New value:
+<ul class="has-list-bullet">
+<li data-line="3" dir="auto"><span class="list-bullet"></span>cnt = 1</li>
+</ul>
+</li>
+</ul></div><div class="el-p"><p dir="auto">Edge cases (if any):</p></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span>Empty tree → return empty vector</li>
+<li data-line="1" dir="auto"><span class="list-bullet"></span>Single node → node itself is mode</li>
+<li data-line="2" dir="auto"><span class="list-bullet"></span>All values unique → all are modes</li>
+<li data-line="3" dir="auto"><span class="list-bullet"></span>All values same → one mode</li>
+<li data-line="4" dir="auto"><span class="list-bullet"></span>Multiple modes possible</li>
+</ul></div><div class="el-p"><p dir="auto">Time &amp; Space complexity:</p></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span>Time: O(n)</li>
+<li data-line="1" dir="auto"><span class="list-bullet"></span><span class="list-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>Space: O(h)
+<ul class="has-list-bullet">
+<li data-line="2" dir="auto"><span class="list-bullet"></span>Balanced tree → O(log n)</li>
+<li data-line="3" dir="auto"><span class="list-bullet"></span>Skewed tree → O(n)</li>
+</ul>
+</li>
+</ul></div><div class="el-p"><p dir="auto"><strong>Code</strong></p></div><div class="el-pre"><pre class="language-cpp"><code data-line="0" class="language-cpp is-loaded"><span class="token keyword">class</span> <span class="token class-name">Solution</span> <span class="token punctuation">{</span>
+    TreeNode<span class="token operator">*</span> prev <span class="token operator">=</span> <span class="token keyword">nullptr</span><span class="token punctuation">;</span>
+    <span class="token keyword">int</span> cnt <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token keyword">int</span> max_count <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">void</span> <span class="token function">dfs</span><span class="token punctuation">(</span>TreeNode<span class="token operator">*</span> root<span class="token punctuation">,</span> vector<span class="token operator">&lt;</span><span class="token keyword">int</span><span class="token operator">&gt;</span><span class="token operator">&amp;</span> result<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>root <span class="token operator">==</span> <span class="token keyword">nullptr</span><span class="token punctuation">)</span> <span class="token keyword">return</span><span class="token punctuation">;</span>
+
+        <span class="token function">dfs</span><span class="token punctuation">(</span>root<span class="token operator">-&gt;</span>left<span class="token punctuation">,</span> result<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>prev <span class="token operator">!=</span> <span class="token keyword">nullptr</span> <span class="token operator">&amp;&amp;</span> prev<span class="token operator">-&gt;</span>val <span class="token operator">==</span> root<span class="token operator">-&gt;</span>val<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            cnt<span class="token operator">++</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+            cnt <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>cnt <span class="token operator">&gt;</span> max_count<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            result<span class="token punctuation">.</span><span class="token function">clear</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            result<span class="token punctuation">.</span><span class="token function">push_back</span><span class="token punctuation">(</span>root<span class="token operator">-&gt;</span>val<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            max_count <span class="token operator">=</span> cnt<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>cnt <span class="token operator">==</span> max_count<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            result<span class="token punctuation">.</span><span class="token function">push_back</span><span class="token punctuation">(</span>root<span class="token operator">-&gt;</span>val<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        prev <span class="token operator">=</span> root<span class="token punctuation">;</span>
+
+        <span class="token function">dfs</span><span class="token punctuation">(</span>root<span class="token operator">-&gt;</span>right<span class="token punctuation">,</span> result<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+<span class="token keyword">public</span><span class="token operator">:</span>
+    vector<span class="token operator">&lt;</span><span class="token keyword">int</span><span class="token operator">&gt;</span> <span class="token function">findMode</span><span class="token punctuation">(</span>TreeNode<span class="token operator">*</span> root<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        vector<span class="token operator">&lt;</span><span class="token keyword">int</span><span class="token operator">&gt;</span> result<span class="token punctuation">;</span>
+        <span class="token function">dfs</span><span class="token punctuation">(</span>root<span class="token punctuation">,</span> result<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> result<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+</code><button class="copy-code-button"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon lucide-copy"><rect x="8" y="8" width="14" height="14" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></pre></div><div class="el-h3"><h3 data-heading="[Kth Smallest Element in a BST](https://leetcode.com/problems/kth-smallest-element-in-a-bst/description/)" dir="auto" class="heading" id="[Kth_Smallest_Element_in_a_BST](https//leetcode.com/problems/kth-smallest-element-in-a-bst/description/)_1"><span class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span><a data-tooltip-position="top" aria-label="https://leetcode.com/problems/kth-smallest-element-in-a-bst/description/" rel="noopener nofollow" class="external-link is-unresolved" href="https://leetcode.com/problems/kth-smallest-element-in-a-bst/description/" target="_self">Kth Smallest Element in a BST</a></h3></div><div class="el-p"><p dir="auto">Intitution:</p></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span>BST inorder traversal gives elements in sorted order</li>
+<li data-line="1" dir="auto"><span class="list-bullet"></span>kth visited node during inorder traversal = kth smallest element</li>
+<li data-line="2" dir="auto"><span class="list-bullet"></span>We only need a counter while traversing</li>
+</ul></div><div class="el-p"><p dir="auto">Key observation:</p></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span><span class="list-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>Inorder traversal order:
+<ul class="has-list-bullet">
+<li data-line="1" dir="auto"><span class="list-bullet"></span>left → node → right</li>
+</ul>
+</li>
+<li data-line="2" dir="auto"><span class="list-bullet"></span>Nodes are visited in increasing order</li>
+<li data-line="3" dir="auto"><span class="list-bullet"></span>Count nodes during traversal</li>
+<li data-line="4" dir="auto"><span class="list-bullet"></span>When count becomes k → current node is answer</li>
+</ul></div><div class="el-p"><p dir="auto">Approach:</p></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span>Perform inorder traversal</li>
+<li data-line="1" dir="auto"><span class="list-bullet"></span><span class="list-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>Maintain:
+<ul class="has-list-bullet">
+<li data-line="2" dir="auto"><span class="list-bullet"></span>cnt → number of visited nodes</li>
+<li data-line="3" dir="auto"><span class="list-bullet"></span>result → kth smallest value</li>
+</ul>
+</li>
+<li data-line="4" dir="auto"><span class="list-bullet"></span><span class="list-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>For every visited node:
+<ul class="has-list-bullet">
+<li data-line="5" dir="auto"><span class="list-bullet"></span>cnt++</li>
+<li data-line="6" dir="auto"><span class="list-bullet"></span><span class="list-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>if cnt == k:
+<ul class="has-list-bullet">
+<li data-line="7" dir="auto"><span class="list-bullet"></span>store answer</li>
+<li data-line="8" dir="auto"><span class="list-bullet"></span>stop traversal early</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul></div><div class="el-p"><p dir="auto">Invariant:</p></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span><span class="list-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>During traversal:
+<ul class="has-list-bullet">
+<li data-line="1" dir="auto"><span class="list-bullet"></span>cnt = number of nodes processed in sorted order</li>
+<li data-line="2" dir="auto"><span class="list-bullet"></span><span class="list-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>When cnt == k:
+<ul class="has-list-bullet">
+<li data-line="3" dir="auto"><span class="list-bullet"></span>current node is kth smallest</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul></div><div class="el-p"><p dir="auto">Correct flow:</p></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span>traverse left</li>
+<li data-line="1" dir="auto"><span class="list-bullet"></span>cnt++</li>
+<li data-line="2" dir="auto"><span class="list-bullet"></span><span class="list-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>if cnt == k:
+<ul class="has-list-bullet">
+<li data-line="3" dir="auto"><span class="list-bullet"></span>answer found</li>
+</ul>
+</li>
+<li data-line="4" dir="auto"><span class="list-bullet"></span>traverse right</li>
+</ul></div><div class="el-p"><p dir="auto">Early stopping optimization:</p></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span>Once kth element found:</li>
+<li data-line="1" dir="auto"><span class="list-bullet"></span>stop further recursion</li>
+<li data-line="2" dir="auto"><span class="list-bullet"></span>Avoid unnecessary traversal</li>
+</ul></div><div class="el-p"><p dir="auto">Edge cases (if any):</p></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span>k = 1 → smallest element</li>
+<li data-line="1" dir="auto"><span class="list-bullet"></span>k = n → largest element</li>
+<li data-line="2" dir="auto"><span class="list-bullet"></span>Single node tree</li>
+<li data-line="3" dir="auto"><span class="list-bullet"></span>Skewed BST behaves like sorted linked list</li>
+<li data-line="4" dir="auto"><span class="list-bullet"></span>Duplicates count as separate elements</li>
+</ul></div><div class="el-p"><p dir="auto">Time &amp; Space complexity:</p></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span><span class="list-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>Time:
+<ul class="has-list-bullet">
+<li data-line="1" dir="auto"><span class="list-bullet"></span>Average: O(h + k)</li>
+<li data-line="2" dir="auto"><span class="list-bullet"></span>Worst: O(n)</li>
+</ul>
+</li>
+<li data-line="3" dir="auto"><span class="list-bullet"></span><span class="list-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>Space: O(h)
+<ul class="has-list-bullet">
+<li data-line="4" dir="auto"><span class="list-bullet"></span>Balanced tree → O(log n)</li>
+<li data-line="5" dir="auto"><span class="list-bullet"></span>Skewed tree → O(n)</li>
+</ul>
+</li>
+</ul></div><div class="el-p"><p dir="auto"><strong>Code</strong></p></div><div class="el-pre"><pre class="language-cpp"><code data-line="0" class="language-cpp is-loaded"><span class="token keyword">class</span> <span class="token class-name">Solution</span> <span class="token punctuation">{</span>
+    <span class="token keyword">int</span> cnt <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">void</span> <span class="token function">inorder</span><span class="token punctuation">(</span>TreeNode<span class="token operator">*</span> root<span class="token punctuation">,</span> <span class="token keyword">int</span> k<span class="token punctuation">,</span> <span class="token keyword">int</span><span class="token operator">&amp;</span> result<span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>root <span class="token operator">==</span> <span class="token keyword">nullptr</span> <span class="token operator">||</span> cnt <span class="token operator">&gt;=</span> k<span class="token punctuation">)</span> <span class="token keyword">return</span><span class="token punctuation">;</span>
+        <span class="token function">inorder</span><span class="token punctuation">(</span>root<span class="token operator">-&gt;</span>left<span class="token punctuation">,</span> k<span class="token punctuation">,</span> result<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        cnt<span class="token operator">++</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>cnt <span class="token operator">==</span> k<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            result <span class="token operator">=</span> root<span class="token operator">-&gt;</span>val<span class="token punctuation">;</span>
+            <span class="token keyword">return</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token function">inorder</span><span class="token punctuation">(</span>root<span class="token operator">-&gt;</span>right<span class="token punctuation">,</span> k<span class="token punctuation">,</span> result<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+<span class="token keyword">public</span><span class="token operator">:</span>
+    <span class="token keyword">int</span> <span class="token function">kthSmallest</span><span class="token punctuation">(</span>TreeNode<span class="token operator">*</span> root<span class="token punctuation">,</span> <span class="token keyword">int</span> k<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">int</span> result <span class="token operator">=</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">;</span>
+        <span class="token function">inorder</span><span class="token punctuation">(</span>root<span class="token punctuation">,</span> k<span class="token punctuation">,</span> result<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> result<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+</code><button class="copy-code-button"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon lucide-copy"><rect x="8" y="8" width="14" height="14" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></pre></div><div class="el-h3"><h3 data-heading="[Binary Search Tree Iterator](https://leetcode.com/problems/binary-search-tree-iterator/description/)" dir="auto" class="heading" id="[Binary_Search_Tree_Iterator](https//leetcode.com/problems/binary-search-tree-iterator/description/)_0"><span class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span><a data-tooltip-position="top" aria-label="https://leetcode.com/problems/binary-search-tree-iterator/description/" rel="noopener nofollow" class="external-link is-unresolved" href="https://leetcode.com/problems/binary-search-tree-iterator/description/" target="_self">Binary Search Tree Iterator</a></h3></div><div class="el-p"><p dir="auto">Intitution:</p></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span>BST inorder traversal gives elements in sorted order</li>
+<li data-line="1" dir="auto"><span class="list-bullet"></span>BST Iterator should return elements one-by-one in sorted order</li>
+<li data-line="2" dir="auto"><span class="list-bullet"></span>Instead of storing entire inorder traversal beforehand, we can simulate inorder traversal lazily using a stack</li>
+</ul></div><div class="el-p"><p dir="auto">Key observation:</p></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span><span class="list-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>In recursive inorder traversal:
+<ul class="has-list-bullet">
+<li data-line="1" dir="auto"><span class="list-bullet"></span>recursion stack stores path to current node</li>
+</ul>
+</li>
+<li data-line="2" dir="auto"><span class="list-bullet"></span>We can manually simulate this recursion stack using explicit stack</li>
+<li data-line="3" dir="auto"><span class="list-bullet"></span>The next smallest element is always the top of the stack</li>
+</ul></div><div class="el-p"><p dir="auto">Approach:</p></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span>Maintain a stack</li>
+<li data-line="1" dir="auto"><span class="list-bullet"></span><span class="list-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>Initially:
+<ul class="has-list-bullet">
+<li data-line="2" dir="auto"><span class="list-bullet"></span>push all left nodes from root</li>
+</ul>
+</li>
+<li data-line="3" dir="auto"><span class="list-bullet"></span><span class="list-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>Why?
+<ul class="has-list-bullet">
+<li data-line="4" dir="auto"><span class="list-bullet"></span>Leftmost node is smallest element</li>
+</ul>
+</li>
+<li data-line="5" dir="auto"><span class="list-bullet"></span><span class="list-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>For next():
+<ul class="has-list-bullet">
+<li data-line="6" dir="auto"><span class="list-bullet"></span>pop top node</li>
+<li data-line="7" dir="auto"><span class="list-bullet"></span>this is next smallest</li>
+<li data-line="8" dir="auto"><span class="list-bullet"></span><span class="list-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>if popped node has right child:
+<ul class="has-list-bullet">
+<li data-line="9" dir="auto"><span class="list-bullet"></span>push all left nodes of right subtree</li>
+</ul>
+</li>
+</ul>
+</li>
+<li data-line="10" dir="auto"><span class="list-bullet"></span><span class="list-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>For hasNext():
+<ul class="has-list-bullet">
+<li data-line="11" dir="auto"><span class="list-bullet"></span>return whether stack is empty or not</li>
+</ul>
+</li>
+</ul></div><div class="el-p"><p dir="auto">Invariant:</p></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span>Stack always stores path to next inorder node</li>
+<li data-line="1" dir="auto"><span class="list-bullet"></span>Top of stack = next smallest unvisited element</li>
+</ul></div><div class="el-p"><p dir="auto">Why pushing left chain works:</p></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span><span class="list-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>Inorder traversal:
+<ul class="has-list-bullet">
+<li data-line="1" dir="auto"><span class="list-bullet"></span>left → node → right</li>
+</ul>
+</li>
+<li data-line="2" dir="auto"><span class="list-bullet"></span><span class="list-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>So before visiting any node:
+<ul class="has-list-bullet">
+<li data-line="3" dir="auto"><span class="list-bullet"></span>we must completely process left subtree</li>
+</ul>
+</li>
+<li data-line="4" dir="auto"><span class="list-bullet"></span><span class="list-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>Therefore:
+<ul class="has-list-bullet">
+<li data-line="5" dir="auto"><span class="list-bullet"></span>always move as left as possible first</li>
+</ul>
+</li>
+</ul></div><div class="el-p"><p dir="auto">Why this is optimal:</p></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span>We do traversal only when needed</li>
+<li data-line="1" dir="auto"><span class="list-bullet"></span>Called lazy inorder traversal</li>
+<li data-line="2" dir="auto"><span class="list-bullet"></span>Avoids storing entire tree traversal</li>
+</ul></div><div class="el-p"><p dir="auto">Comparison with brute force:</p></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span><span class="list-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>
+<p>Brute force:</p>
+<ul class="has-list-bullet">
+<li data-line="1" dir="auto"><span class="list-bullet"></span>store entire inorder traversal in vector</li>
+<li data-line="2" dir="auto"><span class="list-bullet"></span>space: O(n)</li>
+</ul>
+</li>
+<li data-line="4" dir="auto"><span class="list-bullet"></span><span class="list-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>
+<p>Optimal:</p>
+<ul class="has-list-bullet">
+<li data-line="5" dir="auto"><span class="list-bullet"></span>store only root-to-leaf path</li>
+<li data-line="6" dir="auto"><span class="list-bullet"></span>space: O(h)</li>
+</ul>
+</li>
+</ul></div><div class="el-p"><p dir="auto">Complexities:</p></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span><span class="list-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>
+<p>Constructor:</p>
+<ul class="has-list-bullet">
+<li data-line="1" dir="auto"><span class="list-bullet"></span>O(h)</li>
+</ul>
+</li>
+<li data-line="3" dir="auto"><span class="list-bullet"></span><span class="list-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>
+<p>next():</p>
+<ul class="has-list-bullet">
+<li data-line="4" dir="auto"><span class="list-bullet"></span>Average/amortized: O(1)</li>
+<li data-line="5" dir="auto"><span class="list-bullet"></span>Worst case: O(h)</li>
+</ul>
+</li>
+<li data-line="7" dir="auto"><span class="list-bullet"></span><span class="list-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>
+<p>hasNext():</p>
+<ul class="has-list-bullet">
+<li data-line="8" dir="auto"><span class="list-bullet"></span>O(1)</li>
+</ul>
+</li>
+<li data-line="10" dir="auto"><span class="list-bullet"></span><span class="list-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></span>
+<p>Space:</p>
+<ul class="has-list-bullet">
+<li data-line="11" dir="auto"><span class="list-bullet"></span>O(h)</li>
+<li data-line="12" dir="auto"><span class="list-bullet"></span>h = tree height</li>
+</ul>
+</li>
+</ul></div><div class="el-p"><p dir="auto">Edge cases:</p></div><div class="el-ul"><ul class="has-list-bullet">
+<li data-line="0" dir="auto"><span class="list-bullet"></span>Empty tree</li>
+<li data-line="1" dir="auto"><span class="list-bullet"></span>Single node tree</li>
+<li data-line="2" dir="auto"><span class="list-bullet"></span>Completely skewed tree</li>
+<li data-line="3" dir="auto"><span class="list-bullet"></span>Right-heavy tree</li>
+<li data-line="4" dir="auto"><span class="list-bullet"></span>Left-heavy tree</li>
+</ul></div><div class="el-p"><p dir="auto"><strong>Code</strong></p></div><div class="el-pre"><pre class="language-cpp"><code data-line="0" class="language-cpp is-loaded"><span class="token keyword">class</span> <span class="token class-name">BSTIterator</span> <span class="token punctuation">{</span>
+    stack<span class="token operator">&lt;</span>TreeNode<span class="token operator">*</span><span class="token operator">&gt;</span> st<span class="token punctuation">;</span>
+
+    <span class="token keyword">void</span> <span class="token function">pushLeft</span><span class="token punctuation">(</span>TreeNode<span class="token operator">*</span> root<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">while</span> <span class="token punctuation">(</span>root <span class="token operator">!=</span> <span class="token keyword">nullptr</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            st<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>root<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            root <span class="token operator">=</span> root<span class="token operator">-&gt;</span>left<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+<span class="token keyword">public</span><span class="token operator">:</span>
+    <span class="token function">BSTIterator</span><span class="token punctuation">(</span>TreeNode<span class="token operator">*</span> root<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">pushLeft</span><span class="token punctuation">(</span>root<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">int</span> <span class="token function">next</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        TreeNode<span class="token operator">*</span> node <span class="token operator">=</span> st<span class="token punctuation">.</span><span class="token function">top</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        st<span class="token punctuation">.</span><span class="token function">pop</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>node<span class="token operator">-&gt;</span>right <span class="token operator">!=</span> <span class="token keyword">nullptr</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token function">pushLeft</span><span class="token punctuation">(</span>node<span class="token operator">-&gt;</span>right<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">return</span> node<span class="token operator">-&gt;</span>val<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">bool</span> <span class="token function">hasNext</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token operator">!</span>st<span class="token punctuation">.</span><span class="token function">empty</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+</code><button class="copy-code-button"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon lucide-copy"><rect x="8" y="8" width="14" height="14" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></pre></div><div class="footer"><div class="data-bar"></div></div></div></div></div><div id="right-content" class="leaf" style="--sidebar-width: var(--sidebar-width-right);"><div id="right-sidebar" class="sidebar"><div class="sidebar-handle"></div><div class="sidebar-topbar"><div class="topbar-content"><label class="theme-toggle-container" for="theme-toggle-input" id=""><input class="theme-toggle-input" type="checkbox" id="theme-toggle-input"><div class="toggle-background"></div></label></div><div class="clickable-icon sidebar-collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="svg-icon"><path d="M21 3H3C1.89543 3 1 3.89543 1 5V19C1 20.1046 1.89543 21 3 21H21C22.1046 21 23 20.1046 23 19V5C23 3.89543 22.1046 3 21 3Z"></path><path d="M10 4V20"></path><path d="M4 7H7"></path><path d="M4 10H7"></path><path d="M4 13H7"></path></svg></div></div><div class="sidebar-content-wrapper"><div id="right-sidebar-content" class="leaf-content"><div class="graph-view-wrapper"><div class="feature-header"><div class="feature-title">Interactive Graph</div></div><div class="graph-view-placeholder">
+		<div class="graph-view-container">
+			<div class="graph-icon graph-expand" role="button" aria-label="Expand" data-tooltip-position="top"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></div>
+			<div class="graph-icon graph-global" role="button" aria-label="Global Graph" data-tooltip-position="top"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon lucide-git-fork"><circle cx="12" cy="18" r="3"></circle><circle cx="6" cy="6" r="3"></circle><circle cx="18" cy="6" r="3"></circle><path d="M18 9v2c0 .6-.4 1-1 1H7c-.6 0-1-.4-1-1V9"></path><path d="M12 12v3"></path></svg></div>
+			<canvas id="graph-canvas" class="hide" width="512px" height="512px"></canvas>
+		</div>
+		</div></div><div id="outline" class=" tree-container"><div class="feature-header"><div class="feature-title">Table Of Contents</div><button class="clickable-icon nav-action-button tree-collapse-all" aria-label="Collapse All"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></svg></button></div><div class="tree-item mod-collapsible" data-depth="1"><a class="tree-item-self is-clickable mod-collapsible" href="leetcode/tree-traversal-patterns-(dfs-&amp;-bfs).html#Tree_Traversal_Patterns_(DFS_&amp;_BFS)_0" data-path="#Tree_Traversal_Patterns_(DFS_&amp;_BFS)_0"><div class="tree-item-icon collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></div><div class="tree-item-inner heading-link" heading-name="Tree Traversal Patterns (DFS &amp; BFS)">Tree Traversal Patterns (DFS &amp; BFS)</div></a><div class="tree-item-children"><div class="tree-item mod-collapsible" data-depth="2"><a class="tree-item-self is-clickable mod-collapsible" href="leetcode/tree-traversal-patterns-(dfs-&amp;-bfs).html#Recursive_Preorder_0" data-path="#Recursive_Preorder_0"><div class="tree-item-icon collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></div><div class="tree-item-inner heading-link" heading-name="Recursive Preorder">Recursive Preorder</div></a><div class="tree-item-children"><div class="tree-item" data-depth="3"><a class="tree-item-self is-clickable" href="leetcode/tree-traversal-patterns-(dfs-&amp;-bfs).html#[Binary_Tree_Paths]()_0" data-path="#[Binary_Tree_Paths]()_0"><div class="tree-item-inner heading-link" heading-name="[Binary Tree Paths]()"><span>Binary Tree Paths</span></div></a><div class="tree-item-children"></div></div><div class="tree-item" data-depth="3"><a class="tree-item-self is-clickable" href="leetcode/tree-traversal-patterns-(dfs-&amp;-bfs).html#[Symmetric_Tree]()_0" data-path="#[Symmetric_Tree]()_0"><div class="tree-item-inner heading-link" heading-name="[Symmetric Tree]()"><span>Symmetric Tree</span></div></a><div class="tree-item-children"></div></div><div class="tree-item" data-depth="3"><a class="tree-item-self is-clickable" href="leetcode/tree-traversal-patterns-(dfs-&amp;-bfs).html#[Flatten_Binary_Tree_to_Linked_List](https//leetcode.com/problems/flatten-binary-tree-to-linked-list/description/)_0" data-path="#[Flatten_Binary_Tree_to_Linked_List](https//leetcode.com/problems/flatten-binary-tree-to-linked-list/description/)_0"><div class="tree-item-inner heading-link" heading-name="[Flatten Binary Tree to Linked List](https://leetcode.com/problems/flatten-binary-tree-to-linked-list/description/)"><span>Flatten Binary Tree to Linked List</span></div></a><div class="tree-item-children"></div></div><div class="tree-item" data-depth="3"><a class="tree-item-self is-clickable" href="leetcode/tree-traversal-patterns-(dfs-&amp;-bfs).html#[Smallest_String_Starting_From_Leaf](https//leetcode.com/problems/smallest-string-starting-from-leaf/description/)_0" data-path="#[Smallest_String_Starting_From_Leaf](https//leetcode.com/problems/smallest-string-starting-from-leaf/description/)_0"><div class="tree-item-inner heading-link" heading-name="[Smallest String Starting From Leaf](https://leetcode.com/problems/smallest-string-starting-from-leaf/description/)"><span>Smallest String Starting From Leaf</span></div></a><div class="tree-item-children"></div></div><div class="tree-item" data-depth="3"><a class="tree-item-self is-clickable" href="leetcode/tree-traversal-patterns-(dfs-&amp;-bfs).html#[Find_Mode_in_Binary_Search_Tree](https//leetcode.com/problems/find-mode-in-binary-search-tree/description/)_0" data-path="#[Find_Mode_in_Binary_Search_Tree](https//leetcode.com/problems/find-mode-in-binary-search-tree/description/)_0"><div class="tree-item-inner heading-link" heading-name="[Find Mode in Binary Search Tree](https://leetcode.com/problems/find-mode-in-binary-search-tree/description/)"><span>Find Mode in Binary Search Tree</span></div></a><div class="tree-item-children"></div></div><div class="tree-item" data-depth="3"><a class="tree-item-self is-clickable" href="leetcode/tree-traversal-patterns-(dfs-&amp;-bfs).html#[Kth_Smallest_Element_in_a_BST](https//leetcode.com/problems/kth-smallest-element-in-a-bst/description/)_0" data-path="#[Kth_Smallest_Element_in_a_BST](https//leetcode.com/problems/kth-smallest-element-in-a-bst/description/)_0"><div class="tree-item-inner heading-link" heading-name="[Kth Smallest Element in a BST](https://leetcode.com/problems/kth-smallest-element-in-a-bst/description/)"><span>Kth Smallest Element in a BST</span></div></a><div class="tree-item-children"></div></div><div class="tree-item" data-depth="3"><a class="tree-item-self is-clickable" href="leetcode/tree-traversal-patterns-(dfs-&amp;-bfs).html#[Validate_Binary_Search_Tree](https//leetcode.com/problems/validate-binary-search-tree/description/)_0" data-path="#[Validate_Binary_Search_Tree](https//leetcode.com/problems/validate-binary-search-tree/description/)_0"><div class="tree-item-inner heading-link" heading-name="[Validate Binary Search Tree](https://leetcode.com/problems/validate-binary-search-tree/description/)"><span>Validate Binary Search Tree</span></div></a><div class="tree-item-children"></div></div></div></div><div class="tree-item mod-collapsible" data-depth="2"><a class="tree-item-self is-clickable mod-collapsible" href="leetcode/tree-traversal-patterns-(dfs-&amp;-bfs).html#Recursive_Inorder_0" data-path="#Recursive_Inorder_0"><div class="tree-item-icon collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></div><div class="tree-item-inner heading-link" heading-name="Recursive Inorder">Recursive Inorder</div></a><div class="tree-item-children"><div class="tree-item" data-depth="3"><a class="tree-item-self is-clickable" href="leetcode/tree-traversal-patterns-(dfs-&amp;-bfs).html#[Find_Mode_in_Binary_Search_Tree](https//leetcode.com/problems/find-mode-in-binary-search-tree/description/)_1" data-path="#[Find_Mode_in_Binary_Search_Tree](https//leetcode.com/problems/find-mode-in-binary-search-tree/description/)_1"><div class="tree-item-inner heading-link" heading-name="[Find Mode in Binary Search Tree](https://leetcode.com/problems/find-mode-in-binary-search-tree/description/)"><span>Find Mode in Binary Search Tree</span></div></a><div class="tree-item-children"></div></div><div class="tree-item" data-depth="3"><a class="tree-item-self is-clickable" href="leetcode/tree-traversal-patterns-(dfs-&amp;-bfs).html#[Kth_Smallest_Element_in_a_BST](https//leetcode.com/problems/kth-smallest-element-in-a-bst/description/)_1" data-path="#[Kth_Smallest_Element_in_a_BST](https//leetcode.com/problems/kth-smallest-element-in-a-bst/description/)_1"><div class="tree-item-inner heading-link" heading-name="[Kth Smallest Element in a BST](https://leetcode.com/problems/kth-smallest-element-in-a-bst/description/)"><span>Kth Smallest Element in a BST</span></div></a><div class="tree-item-children"></div></div><div class="tree-item" data-depth="3"><a class="tree-item-self is-clickable" href="leetcode/tree-traversal-patterns-(dfs-&amp;-bfs).html#[Binary_Search_Tree_Iterator](https//leetcode.com/problems/binary-search-tree-iterator/description/)_0" data-path="#[Binary_Search_Tree_Iterator](https//leetcode.com/problems/binary-search-tree-iterator/description/)_0"><div class="tree-item-inner heading-link" heading-name="[Binary Search Tree Iterator](https://leetcode.com/problems/binary-search-tree-iterator/description/)"><span>Binary Search Tree Iterator</span></div></a><div class="tree-item-children"></div></div></div></div></div></div></div></div></div><script defer="">let rs = document.querySelector("#right-sidebar"); rs.classList.toggle("is-collapsed", window.innerWidth < 768); rs.style.setProperty("--sidebar-width", localStorage.getItem("sidebar-right-width"));</script></div></div></div></div></body></html>

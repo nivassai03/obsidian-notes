@@ -1,0 +1,132 @@
+
+<style>
+  .log { font-family: var(--font-mono); font-size: 12px; background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); padding: 12px; min-height: 80px; max-height: 220px; overflow-y: auto; color: var(--color-text-primary); }
+  .log-line { padding: 1px 0; line-height: 1.6; }
+  .log-construct { color: #1D9E75; }
+  .log-copy { color: #BA7517; }
+  .log-move { color: #378ADD; }
+  .log-destruct { color: #E24B4A; }
+  .log-realloc { color: #D4537E; font-weight: 500; }
+  .mem-box { display: inline-flex; flex-direction: column; align-items: center; justify-content: center; width: 64px; height: 54px; border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); font-size: 12px; font-family: var(--font-mono); background: var(--color-background-primary); transition: all 0.3s; }
+  .mem-box.filled { background: var(--color-background-info); border-color: var(--color-border-info); }
+  .mem-box.new-item { background: var(--color-background-success); border-color: var(--color-border-success); }
+  .mem-box.empty { background: var(--color-background-secondary); opacity: 0.5; }
+  .mem-label { font-size: 10px; color: var(--color-text-secondary); margin-top: 2px; }
+  .btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+  button { cursor: pointer; }
+  .tag { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: var(--border-radius-md); font-family: var(--font-mono); }
+  .tag-push { background: var(--color-background-warning); color: var(--color-text-warning); }
+  .tag-emplace { background: var(--color-background-info); color: var(--color-text-info); }
+  .section-label { font-size: 13px; color: var(--color-text-secondary); margin: 0 0 6px; }
+  .cap-info { font-size: 12px; font-family: var(--font-mono); color: var(--color-text-secondary); margin-bottom: 8px; }
+</style>
+
+<h2 class="sr-only">Interactive demo comparing push_back and emplace_back on MBlock vector</h2>
+
+<div style="padding: 1rem 0;">
+  <div class="btn-row">
+    <button onclick="doPush(25)"><span class="tag tag-push">push_back</span> MBlock(25)</button>
+    <button onclick="doPush(75)"><span class="tag tag-push">push_back</span> MBlock(75)</button>
+    <button onclick="doEmplace(50)"><span class="tag tag-emplace">emplace_back</span>(50)</button>
+    <button onclick="doEmplace(100)"><span class="tag tag-emplace">emplace_back</span>(100)</button>
+    <button onclick="resetAll()">reset</button>
+  </div>
+
+  <p class="section-label">vector memory layout</p>
+  <div class="cap-info" id="cap-info">size: 0 &nbsp;|&nbsp; capacity: 0</div>
+  <div id="mem-view" style="display: flex; gap: 8px; flex-wrap: wrap; min-height: 60px; margin-bottom: 1.5rem;"></div>
+
+  <p class="section-label">constructor / destructor log</p>
+  <div class="log" id="log"><span style="color: var(--color-text-tertiary); font-size: 12px;">— press a button to begin —</span></div>
+</div>
+
+<script>
+  const INITIAL_CAP = 0;
+  let items = [];
+  let capacity = 0;
+
+  function addLog(text, cls) {
+    const log = document.getElementById('log');
+    if (log.querySelector('span[style]')) log.innerHTML = '';
+    const d = document.createElement('div');
+    d.className = 'log-line ' + (cls || '');
+    d.textContent = text;
+    log.appendChild(d);
+    log.scrollTop = log.scrollHeight;
+  }
+
+  function renderMem() {
+    const mv = document.getElementById('mem-view');
+    mv.innerHTML = '';
+    const slots = Math.max(capacity, 1);
+    for (let i = 0; i < slots; i++) {
+      const box = document.createElement('div');
+      if (i < items.length) {
+        const isNew = i === items.length - 1 && items[i]._new;
+        box.className = 'mem-box ' + (isNew ? 'new-item' : 'filled');
+        box.innerHTML = `<span style="font-weight:500;color:var(--color-text-primary)">MBlock</span><span class="mem-label">len=${items[i].len}</span>`;
+      } else {
+        box.className = 'mem-box empty';
+        box.innerHTML = `<span style="color:var(--color-text-tertiary)">—</span>`;
+      }
+      mv.appendChild(box);
+    }
+    document.getElementById('cap-info').textContent = `size: ${items.length}  |  capacity: ${capacity}`;
+  }
+
+  function needsRealloc() {
+    return items.length >= capacity;
+  }
+
+  function grow() {
+    const oldCap = capacity;
+    capacity = capacity === 0 ? 1 : capacity * 2;
+    if (oldCap > 0) {
+      addLog(`  ── realloc: capacity ${oldCap} → ${capacity}`, 'log-realloc');
+      for (let i = 0; i < items.length; i++) {
+        addLog(`  move-construct MBlock(len=${items[i].len}) into new buffer`, 'log-move');
+        addLog(`  ~MBlock() old slot len=${items[i].len}`, 'log-destruct');
+      }
+    } else {
+      capacity = 1;
+    }
+  }
+
+  function doPush(len) {
+    items.forEach(x => x._new = false);
+    addLog(`--- push_back(MBlock(${len})) ---`);
+    addLog(`  MBlock(size_t) constructor. len=${len}  ← temporary created`, 'log-construct');
+
+    if (needsRealloc()) grow();
+
+    addLog(`  MBlock(MBlock&&) move-construct into vector slot  ← temp moved in`, 'log-move');
+    addLog(`  ~MBlock() temporary destroyed. len=${len}`, 'log-destruct');
+
+    items.push({ len, _new: true });
+    renderMem();
+  }
+
+  function doEmplace(len) {
+    items.forEach(x => x._new = false);
+    addLog(`--- emplace_back(${len}) ---`);
+
+    if (needsRealloc()) grow();
+
+    addLog(`  MBlock(size_t) constructor. len=${len}  ← constructed IN-PLACE`, 'log-construct');
+    addLog(`  (no temporary, no move, no extra destructor)`, '');
+
+    items.push({ len, _new: true });
+    renderMem();
+  }
+
+  function resetAll() {
+    for (const it of items) {
+      addLog(`~MBlock() len=${it.len}`, 'log-destruct');
+    }
+    items = []; capacity = 0;
+    renderMem();
+    document.getElementById('log').innerHTML = '<span style="color:var(--color-text-tertiary);font-size:12px">— reset —</span>';
+  }
+
+  renderMem();
+</script>
